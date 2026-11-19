@@ -376,3 +376,80 @@ async Task GetFilterTeams()
     }
 }
 ```
+
+### Entity Frame Work Core Migration
+
+## Database migrations
+
+- Ued to control changes to the database
+	- Entity or database changes
+- Applied using update commands
+- Can be rolled back
+- Database changes are tracked in the 
+	__EFMigrationsHistory table
+-Can be replayed to create a database at any time
+
+
+**Once the changes are done we need to run the migration using the below steps**
+
+run: Add-Migration AddedNewEntities --Context FootBallLeagueContext
+
+run: dotnet ef migrations add AddedNewEntities
+
+### Generating Migration Script
+
+*** Run: Script-Migration ***
+Or
+*** Run: Script-Migration -context footballlaguecontext***
+*** Run: Script-Migration Idempotent*** 
+
+- Will look for the changes that nevere happened
+- We can use idempotent EF Core migration scripts to ensure that already-applied migrations are not executed again.
+
+### Using DOtNet CLI
+
+*** Run: dotne ef migrations script ***
+*** Run: dotne ef migrations script --idenmpotent ***
+
+### Rolling back Migrations and Database Changes
+
+***Run: Get-Migration***
+***Run: Get-Migration -context footballlaguecontext*** (If multiple DB context is exist in the Solution)
+
+***To remove a specific migration***
+***Run: Remove-Migration -context FootBallLeagueContext***
+***Run: Update-Database -context FootBallLeagueContext***
+
+### EF Bundles
+
+- Executbale files that can be used to apply migrations
+- Address some shortcomings of PMC and CLI commands
+	- Can be run without needing additional tools or runtime
+	- Can be used as part of CI/CD deployment
+	- Better error handling ensures that database changes succeed or fail together.
+- Equivalent to running database update commands
+
+### Migration at runtime
+
+- Migrations can be programmatically executed by the application at startup
+- Best used in testing and development , not in production
+- DbContext has methods:
+	- Migrate()
+	- EnsureCreated()
+- Migrations are instantly applied when called
+
+### Database Relationships
+- A relationship defines how two entities related to each other.
+- For example:
+	- Each league has one or more teams.(1:M)
+	- A coach is assigned to a team (1:1)
+	- Matches are played by many teams(M:N)
+-In EF Core data models, properties are added relative to the related tables(nvigation properties).
+
+### One to many
+- One record is related to , or referenced by several other
+	- Parent entity should have a collection of the related entity
+	- Related entity, or child, should have FK and navigation properties representing the parent
+	- Use nullable types for optional relationships
+- By using proper conventions, the relationship will be discovered by EF Core
+
